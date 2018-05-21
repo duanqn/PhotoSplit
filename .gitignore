@@ -1,0 +1,6 @@
+*.jpg
+*.bz2
+*.o
+build/*
+*.old
+*.dat
