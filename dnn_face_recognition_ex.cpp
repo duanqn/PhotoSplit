@@ -25,6 +25,7 @@
 #include <dlib/string.h>
 #include <dlib/image_io.h>
 #include <dlib/image_processing/frontal_face_detector.h>
+#include <dlib/geometry.h>
 
 #include "utils.h"
 #include <cstdio>
@@ -73,6 +74,12 @@ using anet_type = loss_metric<fc_no_bias<128,avg_pool_everything<
                             input_rgb_image_sized<150>
                             >>>>>>>>>>>>;
 
+struct FaceInfo {
+    std::string filename;
+    drectangle rect;
+    double angle;
+};
+
 // ----------------------------------------------------------------------------------------
 
 std::vector<matrix<rgb_pixel>> jitter_image(
@@ -81,7 +88,11 @@ std::vector<matrix<rgb_pixel>> jitter_image(
 
 // ----------------------------------------------------------------------------------------
 
-void processImage(std::string filename, frontal_face_detector &detector, shape_predictor &sp, std::vector<matrix<rgb_pixel>> &faces){
+void processImage(std::string filename,
+    frontal_face_detector &detector,
+    shape_predictor &sp, 
+    std::vector<matrix<rgb_pixel>> &faces,
+    std::vector<FaceInfo> &info){
     matrix<rgb_pixel> img;
     load_image(img, filename.c_str());
 
@@ -92,10 +103,19 @@ void processImage(std::string filename, frontal_face_detector &detector, shape_p
     {
         auto shape = sp(img, face);
         matrix<rgb_pixel> face_chip;
-        extract_image_chip(img, get_face_chip_details(shape,150,0.25), face_chip);
+        chip_details face_detail = get_face_chip_details(shape,150,0.25);
+        extract_image_chip(img, face_detail, face_chip);
         faces.push_back(move(face_chip));
+
+        struct FaceInfo tmp;
+        tmp.angle = face_detail.angle;
+        tmp.rect = face_detail.rect;
+        tmp.filename = filename;
+        info.push_back(move(tmp));
     }
 }
+
+// ----------------------------------------------------------------------------------------
 
 int main(int argc, char** argv) try
 {
@@ -135,11 +155,12 @@ int main(int argc, char** argv) try
     // image_window win(img); 
 
     std::vector<matrix<rgb_pixel>> faces;
+    std::vector<FaceInfo> info;
 
     for(int i = 0; i < all_files.size(); ++i){
         if(hasEnding(all_files[i], ".jpg") || hasEnding(all_files[i], ".JPG")){
             printf("Loading %s\n", all_files[i].c_str());
-            processImage(all_files[i], detector, sp, faces);
+            processImage(all_files[i], detector, sp, faces, info);
         }
     }
 
