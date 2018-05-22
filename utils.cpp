@@ -1,10 +1,10 @@
 #ifdef _WIN32
 #include <windows.h>
 #include <Shlwapi.h>
-bool isValidDirectory(char *path){
+bool isValidDirectory(const char *path){
 	return PathIsDirectory(path);
 }
-void fillFilenameVector(char *dir, std::vector<std::string> &files){
+void fillFilenameVector(const char *dir, std::vector<std::string> &files){
 }
 #elif __linux__
 #include <sys/stat.h>
@@ -16,7 +16,7 @@ void fillFilenameVector(char *dir, std::vector<std::string> &files){
 #include <vector>
 #include <string>
 
-bool isValidDirectory(char *path){
+bool isValidDirectory(const char *path){
 	struct stat filestat;
 	bool res = false;
 	int err = stat(path, &filestat);
@@ -30,7 +30,7 @@ bool isValidDirectory(char *path){
 	return res;
 }
 
-void fillFilenameVector(char *dir, std::vector<std::string> &files){
+void fillFilenameVector(const char *dir, std::vector<std::string> &files){
 	if(!isValidDirectory(dir)){
 		return;
 	}
