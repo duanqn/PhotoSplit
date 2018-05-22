@@ -81,6 +81,22 @@ std::vector<matrix<rgb_pixel>> jitter_image(
 
 // ----------------------------------------------------------------------------------------
 
+void processImage(std::string filename, frontal_face_detector &detector, shape_predictor &sp, std::vector<matrix<rgb_pixel>> &faces){
+    matrix<rgb_pixel> img;
+    load_image(img, filename.c_str());
+
+    // Run the face detector on the image of our action heroes, and for each face extract a
+    // copy that has been normalized to 150x150 pixels in size and appropriately rotated
+    // and centered.
+    for (auto face : detector(img))
+    {
+        auto shape = sp(img, face);
+        matrix<rgb_pixel> face_chip;
+        extract_image_chip(img, get_face_chip_details(shape,150,0.25), face_chip);
+        faces.push_back(move(face_chip));
+    }
+}
+
 int main(int argc, char** argv) try
 {
     if (argc != 2)
@@ -96,13 +112,10 @@ int main(int argc, char** argv) try
         return 1;
     }
 
-    if(isValidDirectory(argv[1])){
-        printf("%s is a valid path\n", argv[1]);
-    }
-    else{
+    if(!isValidDirectory(argv[1])){
         printf("%s is not a valid path\n", argv[1]);
+        return 2;
     }
-    return 0;
 
     // The first thing we are going to do is load all our models.  First, since we need to
     // find faces in the image we will need a face detector:
@@ -114,24 +127,20 @@ int main(int argc, char** argv) try
     anet_type net;
     deserialize("dlib_face_recognition_resnet_model_v1.dat") >> net;
 
-    matrix<rgb_pixel> img;
-    load_image(img, argv[1]);
-    // Display the raw image on the screen
-    image_window win(img); 
+    std::vector<std::string> all_files;
+    fillFilenameVector(".", all_files);
 
-    // Run the face detector on the image of our action heroes, and for each face extract a
-    // copy that has been normalized to 150x150 pixels in size and appropriately rotated
-    // and centered.
+    matrix<rgb_pixel> img;
+    // Don't display the raw image on the screen
+    // image_window win(img); 
+
     std::vector<matrix<rgb_pixel>> faces;
-    for (auto face : detector(img))
-    {
-        auto shape = sp(img, face);
-        matrix<rgb_pixel> face_chip;
-        extract_image_chip(img, get_face_chip_details(shape,150,0.25), face_chip);
-        faces.push_back(move(face_chip));
-        // Also put some boxes on the faces so we can see that the detector is finding
-        // them.
-        win.add_overlay(face);
+
+    for(int i = 0; i < all_files.size(); ++i){
+        if(hasEnding(all_files[i], ".jpg") || hasEnding(all_files[i], ".JPG")){
+            printf("Loading %s\n", all_files[i].c_str());
+            processImage(all_files[i], detector, sp, faces);
+        }
     }
 
     if (faces.size() == 0)
