@@ -1,4 +1,4 @@
-*.jpg
+*.[jJ][[pP][gG]
 *.bz2
 *.o
 build/*
