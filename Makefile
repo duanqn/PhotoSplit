@@ -1,13 +1,32 @@
-all: dnn_face_recognition
+DLIB_INC = -I/usr/lib/dlib-19.12
+DLIB_JPEG = -DDLIB_JPEG_SUPPORT
+JPEGLIB = -l:libjpeg.a
+PTHREAD = -lpthread
+X11 = -lX11
+DLIB = $(DLIB_JPEG) $(DLIB_INC)
+
+CC = g++
+CFLAGS = -std=c++11 -O3
+LD = g++
+LDFLAGS = $(X11) $(PTHREAD) $(JPEGLIB)
+
+BUILD_DIR = build
+MKDIR_P = mkdir -p
+SRC_FILES = $(wildcard *.cpp)
+OBJ_FILES := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(SRC_FILES))
+
+all: dir $(BUILD_DIR)/dnn_face_recognition
+
+dir: $(BUILD_DIR)
+	$(MKDIR_P) $(BUILD_DIR)
 
 dlib.o: /usr/lib/dlib-19.12/dlib/all/source.cpp
 	g++ -std=c++11 -O3 -I/usr/lib/dlib-19.12 -lpthread -lX11 -DDLIB_JPEG_SUPPORT -I/usr/lib/libjpeg -l:libjpeg.a /usr/lib/dlib-19.12/dlib/all/source.cpp -c -o dlib.o
 
-dnn_face_recognition.o: dnn_face_recognition_ex.cpp
-	g++ -std=c++11 -O3 -I/usr/lib/dlib-19.12 -lpthread -lX11 -DDLIB_JPEG_SUPPORT -l:libjpeg.a ./dnn_face_recognition_ex.cpp -c -o dnn_face_recognition.o
+$(BUILD_DIR)/%.o: %.cpp
+	$(CC) $(CFLAGS) $(DLIB) -c -o $@ $<
 
-dnn_face_recognition: dnn_face_recognition.o dlib.o
-	g++ dlib.o -lpthread -l:libjpeg.a -lX11 dnn_face_recognition.o -o build/dnn_face_recognition
+$(BUILD_DIR)/dnn_face_recognition: $(OBJ_FILES)
+	$(LD) -o $@ $^ $(LDFLAGS)
 clean:
-	rm *.o
-	rm dnn_face_recognition
+	rm $(BUILD_DIR)/*

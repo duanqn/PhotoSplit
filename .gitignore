@@ -2,5 +2,6 @@
 *.bz2
 *.o
 build/*
+.vscode/*
 *.old
 *.dat

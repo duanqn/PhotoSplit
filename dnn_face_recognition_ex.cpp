@@ -26,6 +26,9 @@
 #include <dlib/image_io.h>
 #include <dlib/image_processing/frontal_face_detector.h>
 
+#include "utils.h"
+#include <cstdio>
+
 using namespace dlib;
 using namespace std;
 
@@ -92,6 +95,14 @@ int main(int argc, char** argv) try
         cout << endl;
         return 1;
     }
+
+    if(isValidDirectory(argv[1])){
+        printf("%s is a valid path\n", argv[1]);
+    }
+    else{
+        printf("%s is not a valid path\n", argv[1]);
+    }
+    return 0;
 
     // The first thing we are going to do is load all our models.  First, since we need to
     // find faces in the image we will need a face detector:
