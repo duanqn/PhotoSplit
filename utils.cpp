@@ -17,6 +17,7 @@ bool isValidDirectory(const char *path){
 	return PathIsDirectory(path);
 }
 void fillFilenameVector(const char *dir, std::vector<std::string> &files){
+	// reference: https://msdn.microsoft.com/en-us/library/aa365200(VS.85).aspx
 }
 #elif __linux__
 #include <sys/stat.h>
