@@ -4,7 +4,7 @@
 bool isValidDirectory(char *path){
 	return PathIsDirectory(path);
 }
-void fillFilenameVector(char *dir, std::vector<std::string> files){
+void fillFilenameVector(char *dir, std::vector<std::string> &files){
 }
 #elif __linux__
 #include <sys/stat.h>
@@ -30,7 +30,7 @@ bool isValidDirectory(char *path){
 	return res;
 }
 
-void fillFilenameVector(char *dir, std::vector<std::string> files){
+void fillFilenameVector(char *dir, std::vector<std::string> &files){
 	if(!isValidDirectory(dir)){
 		return;
 	}
