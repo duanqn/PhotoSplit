@@ -100,6 +100,7 @@ void processImage(std::string filename,
     // copy that has been normalized to 150x150 pixels in size and appropriately rotated
     // and centered.
     for (auto face : detector(img))
+    // Improve: see https://github.com/davisking/dlib/blob/master/examples/dnn_mmod_face_detection_ex.cpp ?
     {
         auto shape = sp(img, face);
         matrix<rgb_pixel> face_chip;
