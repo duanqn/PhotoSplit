@@ -1,3 +1,15 @@
+#include <string>
+
+// Pasted from:
+// https://stackoverflow.com/questions/874134/find-if-string-ends-with-another-string-in-c
+bool hasEnding (std::string const &fullString, std::string const &ending) {
+	if (fullString.length() >= ending.length()) {
+		return (0 == fullString.compare (fullString.length() - ending.length(), ending.length(), ending));
+	} else {
+		return false;
+	}
+}
+
 #ifdef _WIN32
 #include <windows.h>
 #include <Shlwapi.h>
