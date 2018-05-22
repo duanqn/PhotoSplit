@@ -4,4 +4,3 @@
 build/*
 .vscode/*
 *.old
-*.dat
