@@ -168,7 +168,7 @@ int main(int argc, char** argv) try
     if (faces.size() == 0)
     {
         cout << "No faces found in image!" << endl;
-        return 1;
+        return 0;
     }
 
     // This call asks the DNN to convert each face image in faces into a 128D vector.
