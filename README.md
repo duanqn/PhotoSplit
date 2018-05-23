@@ -11,7 +11,7 @@ So far the development and testing has been done on Ubuntu Linux.\
 Porting it to Windows may be a bit difficult, but you are welcome to fork this repo and give it a try!\
 No matter whether you succeed or not, your efforts will be appreciated by all of us.
 
-This program uses the following libraries\
+This program uses the following libraries
 * dlib    v19.12
 * libjpeg
 * pthread
