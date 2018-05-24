@@ -202,17 +202,22 @@ int main(int argc, char** argv) try
 
     // Now let's display the face clustering results on the screen.  You will see that it
     // correctly grouped all the faces. 
-    std::vector<image_window> win_clusters(num_clusters);
+    //std::vector<image_window> win_clusters(num_clusters);
     for (size_t cluster_id = 0; cluster_id < num_clusters; ++cluster_id)
     {
-        std::vector<matrix<rgb_pixel>> temp;
+        std::string foldername = std::string("Person_") + std::to_string(cluster_id);
+        makefolder(foldername.c_str());
+        // TODO: handle the possible errors
+        std::vector<FaceInfo> cluster;
         for (size_t j = 0; j < labels.size(); ++j)
         {
-            if (cluster_id == labels[j])
-                temp.push_back(faces[j]);
+            if (cluster_id == labels[j]){
+                cluster.push_back(info[j]);
+                copyfile(info[j].filename, foldername);
+            }
         }
-        win_clusters[cluster_id].set_title("face cluster " + cast_to_string(cluster_id));
-        win_clusters[cluster_id].set_image(tile_images(temp));
+        //win_clusters[cluster_id].set_title("face cluster " + cast_to_string(cluster_id));
+        //win_clusters[cluster_id].set_image(tile_images(cluster));
     }
 
 

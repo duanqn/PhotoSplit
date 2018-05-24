@@ -19,6 +19,12 @@ bool isValidDirectory(const char *path){
 void fillFilenameVector(const char *dir, std::vector<std::string> &files){
 	// reference: https://msdn.microsoft.com/en-us/library/aa365200(VS.85).aspx
 }
+int makefolder(const char *path){
+	return -1;
+}
+void copyfile(const char *src, const char *dst){
+	
+}
 #elif __linux__
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -58,6 +64,26 @@ void fillFilenameVector(const char *dir, std::vector<std::string> &files){
 	}
 
 	closedir(p);
+}
+
+int makefolder(const char *path)
+{
+	Stat st;
+	int status = 0;
+
+	if (stat(path, &st) != 0)
+	{
+		/* Directory does not exist. EEXIST for race condition */
+		if (mkdir(path, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) != 0 && errno != EEXIST)	// mode 755
+			status = -1;
+	}
+	else if (!S_ISDIR(st.st_mode))
+	{
+		errno = ENOTDIR;
+		status = -1;
+	}
+
+	return(status);
 }
 #elif __unix__
 #else
